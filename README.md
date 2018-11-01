@@ -11,7 +11,7 @@ Here you will find the lecture notes of the course:<br/>
 ### Practicals
 Please use the links below to get information about each day:
 
-* [Day1](day1/day1.md)
-* [Day2](Day2)
-* [Day3](Day3)
-* [Day4](Day4)
+* [Day1](day1)
+* [Day2](day2)
+* [Day3](day3)
+* [Day4](day4)
