@@ -4,9 +4,11 @@ Here you find instructions and material to the **Tools for variant analysis of n
 
 [Course information](https://webext.pasteur.fr/tekaia/BCGAIPT2018/BCGAIPT2018_Prog.html)
 
+**Please note that the information might change as the course progresses!**
+
 ## Lecture Notes
 Here you will find the lecture notes of the course:<br/>
-[Lecture Notes](Lecture_Notes) *WIll be online at the end of the course*
+* [Lecture 1](lectures/lecture1.pdf) 
 
 ## Practicals
 Please use the links below to get information about each day:
