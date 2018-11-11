@@ -33,6 +33,6 @@ Use the provided stubs to create Python programs.<br/>
 * [vcf_examiner.py](vcf_examiner.py)
 
 
-## Task 4 (if there is enough time
+## Task 4 (if there is enough time)
 Listen to GBS introduction
 * [find_restriction_sites.py](find_restriction_sites.py)

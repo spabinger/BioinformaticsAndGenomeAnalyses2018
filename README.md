@@ -1,10 +1,10 @@
-# BioinformaticsAndGenomeAnalyses2018
+# Bioinformatics and Genome Analyses 2018
 
 Here you find instructions and material to the **Tools for variant analysis of next-generation genome sequencing data** section of the **Bioinformatics and genomes analyses 2018** course.
 
 [Course information](https://webext.pasteur.fr/tekaia/BCGAIPT2018/BCGAIPT2018_Prog.html)
 
-**Please note that the information might change as the course progresses!**
+**NOTE: Please note that the information might change as the course progresses!**
 
 ## Lecture Notes
 Here you will find the lecture notes of the course:<br/>
