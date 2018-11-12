@@ -1,7 +1,6 @@
 import sys
 import os
 import csv
-import mysql.connector
 import pysam
 import pybedtools
 
