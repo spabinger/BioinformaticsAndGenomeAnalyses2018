@@ -52,4 +52,12 @@ Use the provided stubs to create Python programs.<br/>
 * [sam_examiner.py](sam_examiner.py)
 
 
+## Python Hints
+* Please make sure that your code is well formatted
+* Check the indentation
+* Always save and test the code
+* Read the error messages carefully
+
+
+
 

@@ -12,7 +12,7 @@ __author__ = 'XXX'
 ## sam_examiner
 ##
 ## The tasks are to
-## - download gene information from UCSC
+## - use the files with gene_information
 ## - examine the given SAM/BAM file
 ## - output the identified information
 ##
