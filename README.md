@@ -18,6 +18,15 @@ Please use the links below to get information about each day:
 * [Day3](day3)
 * [Day4](day4)
 
+#### Resources for learning Python
+* [learnpython.org](https://www.learnpython.org/)
+* [Python - getting started](https://www.python.org/about/gettingstarted/)
+* [Python - interactive shell](https://www.python.org/shell/)
+* [RealPython](https://realpython.com/)
+* [Python for Biologists](https://pythonforbiologists.com/)
+* [The Python Guru](https://thepythonguru.com/)
+
+
 #### Installation of packages
 Please use the following commands to install packages (will be determined during the course):
 
