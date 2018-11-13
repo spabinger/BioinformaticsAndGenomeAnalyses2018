@@ -25,4 +25,6 @@ Please use the following commands to install packages (will be determined during
 module load anaconda3
 conda install -c bioconda pysam 
 conda install -c bioconda pybedtools
+conda install -c bioconda pyvcf
+
 ```
