@@ -1,9 +1,18 @@
-#! /usr/bin/env python3
-
+import argparse
+import os
+import sys
 import vcf
 
 __author__ = 'XXX'
 
+## Aim of this program is to extract information from a given VCF file; arguments:
+## - VCF file
+##
+
+## Define the argument parser
+parser = argparse.ArgumentParser(description="Examine the content of a VCF file")
+## Specify an input to pass the path of a VCF file to the program
+#parser.add_argument('long_name_of_argument', help='help_text', default="default_value" type=type_of_the_argument)
 
 class VCF_Examiner:
     
@@ -12,7 +21,7 @@ class VCF_Examiner:
         print("PyVCF version: %s" % vcf.VERSION)
     
     
-    def get_average_quality_of_son(self):
+    def get_average_quality_of_file(self):
         '''
             Get the average PHRED quality of all variants
             :return:
@@ -20,7 +29,7 @@ class VCF_Examiner:
         print("TODO")
     
     
-    def get_total_number_of_variants_of_son(self):
+    def get_total_number_of_variants_of_file(self):
         '''
             Get the total number of variants
             :return: total number of variants
@@ -73,8 +82,14 @@ class VCF_Examiner:
 
 if __name__ == '__main__':
     print("VCF_Examiner")
-    assignment1 = VCF_Examiner()
-    assignment1.print_summary()
+
+    ## Read the arguments (argument parser)
+
+        
+    ## Pass the argument to the VCF_Examiner object
+
+    vcf_examiner = VCF_Examiner()
+    vcf_examiner.print_summary()
     
     print("All done.")
 

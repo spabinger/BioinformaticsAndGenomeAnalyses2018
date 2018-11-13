@@ -4,7 +4,7 @@ import csv
 import subprocess
 import os
 
-__author__ = 'XY'
+__author__ = 'Stephan'
 
 ## Aim of this program is to extract a sequence given the following arguments:
 ## - Reference genome
@@ -14,7 +14,7 @@ __author__ = 'XY'
 ##
 ## We will use SAMTOOLS for extracting the sequence
 ## Required as an exiting and indexed reference genome (samtools faidx)
-## If enough time left, consider extending the script to use a BED file as input (multiple regions)
+## Homework: consider extending the script to use a BED file as input (multiple regions)
 
 
 ## Define here the argument (see above)
@@ -41,7 +41,7 @@ def process_input(ref, chrom, start, end):
                 except subprocess.CalledProcessError as e:
                     print(e)                     
                     print("ERROR!: SAMTOOLS could not extract the region")
-                    print("        Please make sure that the chromosome exists")
+                    print("        Please make sure that the chromosome exists.")
                     sys.exit(1)
 
 
@@ -63,14 +63,15 @@ def main():
 
         ## Check that the 'end' position is bigger or equal to the 'start' position
         if args.end < args.start:
-            print("ERROR!: End cannot be smaller than the start. Please check your parameters")
+            print("ERROR!: End cannot be smaller than the start. Please check your parameters.")
             found_error = True
 
         ## Exit the program if an error was found
         if found_error is True:
             sys.exit(1)
 
-        ## Process only one line if no input_file
+        ## Process only one line if no input_file is given
+        ## Here the program could read lines of a, e.g., BED file to process multiple regions.
         process_input(args.ref, args.chr, args.start, args.end)
 
         print("All done")

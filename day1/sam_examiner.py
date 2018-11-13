@@ -45,13 +45,13 @@ class SamExaminer:
                         self.txEnd = int(info[4])
                         self.strand = info[5]
                         self.exonCount = info[6]
-                        self.exonStarts = info[7] # Das ist ein bytestring
-                        self.exonEnds = info[8] # Das ist ein bytestring
+                        self.exonStarts = info[7] # bytestring
+                        self.exonEnds = info[8] # bytestring
                     
             print("Done loading fetched data")
             
         
-        print("Done fetching data")
+        print("Done with init")
                 
                 
     def get_sam_header(self):
@@ -75,11 +75,11 @@ class SamExaminer:
         
         
     def get_region_of_gene(self):
-        print("ads")
+        print("todo")
         
         
     def get_number_of_exons(self):
-        print("ads")
+        print("todo")
         
     
     def print_summary(self):

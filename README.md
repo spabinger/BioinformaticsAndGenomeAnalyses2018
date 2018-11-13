@@ -22,5 +22,7 @@ Please use the links below to get information about each day:
 Please use the following commands to install packages (will be determined during the course):
 
 ```
-Will be filled
+module load anaconda3
+conda install -c bioconda pysam 
+conda install -c bioconda pybedtools
 ```

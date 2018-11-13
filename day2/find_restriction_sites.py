@@ -66,9 +66,11 @@ def find_restriction_sites(sequence, enyzme_list):
     
     ## Parse the search result and store it in a list
     enzyme_details = []
-    for enzyme in rb_result:
-        if rb_result[enzyme]:
-            ## TODO
+    if rb_result:
+        for enzyme in rb_result:
+            if rb_result[enzyme]:
+                print("TODO")
+                ## TODO
             
     ##return the enzyme_details
 
