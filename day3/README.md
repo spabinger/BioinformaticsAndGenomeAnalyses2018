@@ -54,7 +54,12 @@ For some variant callers we use a [target file](target.bed) to shorten variant c
 #### SAMtools
 
 __(*)__ Download the necessary files
+    
     see Data section
+    
+    Perform (expect weird output):
+    - head HG00096.mapped.ILLUMINA.bwa.GBR.exome.20120522_chr1_50mio_with_chr_small.bam
+    - head na12878_pacbio_mts_ngmlr-0.2.3_mapped_small_sorted.bam
 
 
 __(*)__ Rename the BAM file
