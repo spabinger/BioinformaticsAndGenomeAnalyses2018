@@ -201,6 +201,9 @@ __(*)__ Prepare alignment file for Picard
     samtools view -H aln.bam > aln_fixed_header.sam
     cat aln_fixed_header.sam aln_fixed_alignment.sam > aln_fixed_all.sam
     samtools view -S -h -b aln_fixed_all.sam > aln_fixed.bam
+    rm aln_fixed_header.sam
+    rm aln_fixed_alignment.sam
+    rm aln_fixed_all.sam
 
 
 __(*)__ Sort with Picard
@@ -253,6 +256,13 @@ __(*)__ Investigate result
     awk '!/^#/ && $2 < "300000"' samtools.vcf
 
 #### FreeBayes variant calling
+
+__(*)__ Check out the FreeBayes website
+
+    - Does FreeBayes support using a target.bed file?
+    - Can you use FreeBayes with multiple cores?
+    - How can you ask questions to the developer/community?
+    
 
 __(*)__ Call
 
