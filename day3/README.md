@@ -6,7 +6,7 @@ In this practical you will get to know basic tools for SAM/BAM manipulation and 
 ## Data
 
 * BAM file for Sniffles: [BAM_file_sniffles](https://hmd.ait.ac.at/bcga/na12878_pacbio_mts_ngmlr-0.2.3_mapped_small_sorted.bam)
-* BAM file for SV calling: [BAM_file](https://hmd.ait.ac.at/bcga/HG00096.mapped.ILLUMINA.bwa.GBR.exome.20120522_chr1_50mio_with_chr.bam)
+* BAM file for variant calling: [BAM_file](https://hmd.ait.ac.at/bcga/HG00096.mapped.ILLUMINA.bwa.GBR.exome.20120522_chr1_50mio_with_chr_small.bam)
 * Target file: [Target_file](https://hmd.ait.ac.at/bcga/target.bed)
 
 
@@ -33,7 +33,112 @@ In this practical you will get to know basic tools for SAM/BAM manipulation and 
 
 
 
-## Exercise 1 - SV calling
+## Exercise 1
+
+We assume that we have a properly mapped BAM file from quality checked reads.
+For some variant callers we use a [target file](target.bed) to shorten variant calling time.
+
+#### Important
+
+* After each step inspect the generated output (cat, less, head, grep, ...).
+* Organize your data and results in folders.
+* Check out the specified parameters. If you don't know the exact meaning, consult the help pages (-h, --help).
+
+
+#### System information
+
+    cat /proc/cpuinfo
+    cat /proc/meminfo
+    
+
+#### SAMtools
+
+__(*)__ Download the necessary files
+    see Data section
+
+
+__(*)__ Rename the BAM file
+
+	mv HG00096.mapped.ILLUMINA.bwa.GBR.exome.20120522_chr1_50mio_with_chr_small.bam aln.bam
+	
+
+__(*)__ How big is the BAM file
+
+    TODO
+    
+
+__(*)__ Inspect the header of the BAM file
+	
+	samtools ... TODO
+    
+
+
+__(*)__ View the BAM file
+
+    TODO
+    
+    
+__(*)__ How many reads are in the BAM file?<br/>
+Is there another way to count the reads (check the samtools view parameters - look for -v)
+   
+    TODO1
+    TODO2
+    
+    
+__(*)__ Answer the following questions by investigating the SAM file
+* What version of the human assembly was used to perform the alignments?
+* What version of bwa was used to align the reads?
+* What is the name of the first read?
+* At what position does the alignment of the read start?
+
+    Use SAMtools for these questions
+    samtools view -H aln.bam | less
+    samtools view aln.bam | less
+
+    
+__(*)__ Sort the BAM file
+
+    samtools sort -o sorted.bam -@ 2 aln.bam
+    
+
+__(*)__ Extract small file
+
+    samtools view -h sorted.bam | head -n 50000 | samtools view -S -b -0 small_sorted.bam 
+    
+    
+__(*)__ Index the bam file
+    
+    TODO
+    
+    
+__(*)__ How many alignments contain a deletion (D)
+    
+    TODO
+    
+  
+__(*)__ How many sequences are in the genome file
+
+    samtools view -H test.bam | grep -c "SN:"
+
+
+#### Alignment stats
+
+    samtools flagstat sorted.bam
+    samtools idxstats sorted.bam
+
+  
+#### Prepare reference genome
+__(*)__ Prepare dict index *either with chr1 or with a full reference genome*
+    
+    java -jar -Xmx4G picard.jar CreateSequenceDictionary R=hg19.fasta O=hg19.dict
+
+__(*)__ Prepare fai index
+    
+    samtools faidx hg19.fasta 
+
+
+
+## Exercise 2 - SV calling
 
 Will will use Sniffles to call SV variants - check out the Readme page:
 [https://github.com/fritzsedlazeck/Sniffles](https://github.com/fritzsedlazeck/Sniffles)
@@ -76,119 +181,41 @@ __(*)__ Check out the identified variants
 	- What would be your next steps?
 	
 	
+## Exercise 3
 
-## Exercise 2
-
-We assume that we have a properly mapped BAM file from quality checked reads.
-For some variant callers we use a [target file](target.bed) to shorten variant calling time.
-
-#### Important
-
-* After each step inspect the generated output (cat, less, head, grep, ...).
-* Organize your data and results in folders.
-* Check out the specified parameters. If you don't know the exact meaning, consult the help pages (-h, --help).
-
-
-#### System information
-
-    cat /proc/cpuinfo
-    cat /proc/meminfo
-    
-
-#### SAMtools
-
-__(*)__ Download the necessary files
-    see Data section
-
-
-__(*)__ Rename the BAM file
-
-	mv HG00096.mapped.ILLUMINA.bwa.GBR.exome.20120522_chr1_50mio_with_chr.bam aln.bam
-	
-
-__(*)__ How big is the BAM file
-
-    ls -lah <aln.bam>
-    
-
-__(*)__ Inspect the header of the BAM file
-	
-	module add samtools
-    samtools ...
-    samtools view -H aln.bam
-
-
-__(*)__ View the BAM file
-
-    module add samootls
-    samtools view <bam.file> | less
-    
-    
-__(*)__ How many reads are in the BAM file?<br/>
-Is there another way to count the reads (check the samtools view parameters - look for -v)
-   
-    samtools view <file.bam> | grep -v "^#" | wc -l
-    samtools flagstat <file.bam>
-    
-    
-__(*)__ Answer the following questions by investigating the SAM file
-* What version of the human assembly was used to perform the alignments?
-* What version of bwa was used to align the reads?
-* What is the name of the first read?
-* At what position does the alignment of the read start?
-
-    Use SAMtools for these questions
-    samtools view -H aln.bam | less
-    samtools view aln.bam | less
-
-    
-__(*)__ Sort the BAM file
-
-    samtools sort -o sorted.bam -@ <THREADS> <file.bam>
-    
-
-__(*)__ Extract small file
-
-    samtools view -h sorted.bam | head -n 50000 | samtools view -S -b -0 small_sorted.bam 
-    
-    
-__(*)__ Index the bam file
-    
-    samtools index <sorted.bam>
-
-
-#### Alignment stats
-    samtools flagstat sorted.bam
-    samtools idxstats sorted.bam
-
-
-    
-  
-#### Prepare reference genome
-__(*)__ Prepare dict index
-    
-    module add picard
-    java -jar -Xmx2G picard-tools/picard.jar CreateSequenceDictionary R=hg19.fasta O=hg19.dict
-
-__(*)__ Prepare fai index
-    
-    samtools faidx hg19.fasta 
 
 
 #### BAM file preparations
+
+__(*)__ Check out Picard
+
+    Go to the Picard website and investigate the features.
+    - How many methods are available?
+    - What syntax/command needs to be used to specify parameters?
+    - In what programming language is Picard written?
+    
+
+__(*)__ Prepare alignment file for Picard
+    
+    samtools view aln.bam | awk '{if ($7 != "*") { print }}' OFS='\t' > aln_fixed_alignment.sam
+    samtools view -H aln.bam > aln_fixed_header.sam
+    cat aln_fixed_header.sam aln_fixed_alignment.sam > aln_fixed_all.sam
+    samtools view -S -h -b aln_fixed_all.sam > aln_fixed.bam
+
+
 __(*)__ Sort with Picard
     
-    java -Xmx4g -jar /bcga2016/picard-tools/picard.jar SortSam I=aln.bam O=sorted_picard.bam SORT_ORDER=coordinate
+    java -Xmx4g -jar picard.jar SortSam I=aln.bam O=sorted_picard.bam SORT_ORDER=coordinate
 
 
 __(*)__ Mark duplicates
      
-    java -Xmx4g -jar /bcga2016/picard-tools/picard.jar MarkDuplicates I=sorted_picard.bam O=dedup.bam M=metrics.txt
+    java -Xmx4g -jar picard.jar MarkDuplicates I=sorted_picard.bam O=dedup.bam M=metrics.txt
 
 
 __(*)__ Add ReadGroup
     
-    java -Xmx4g -jar /bcga2016/picard-tools/picard.jar AddOrReplaceReadGroups I=dedup.bam O=deduprg.bam RGID=group1 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=sample1
+    java -Xmx4g -jar picard.jar AddOrReplaceReadGroups I=dedup.bam O=deduprg.bam RGID=group1 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=sample1
 
 
 __(*)__ Index with Picard
@@ -198,7 +225,7 @@ __(*)__ Index with Picard
 
 __(*)__ Collect insert size metrics
     
-    module add R-3.2.4
+    module add R....
     java -Xmx4g -jar /bcga2016/picard-tools/picard.jar CollectInsertSizeMetrics I=deduprg.bam O=insertSizeHistogram.txt H=insertSizeHistogram.pdf
     
     
@@ -216,8 +243,7 @@ __(*)__ Questions
 
 __(*)__ Call
 
-     module add bcftools-1.1
-     samtools mpileup -uf hg19.fasta deduprg.bam | bcftools call -c -v -o samtools.vcf
+     samtools mpileup -uf xxx.fa(sta) deduprg.bam | bcftools call -c -v -o samtools.vcf
 
 __(*)__ Investigate result
 
@@ -230,7 +256,7 @@ __(*)__ Investigate result
 
 __(*)__ Call
 
-     module add freebayes-xy
+     module add freebayes....
      freebayes -f hg19.fasta -t target.bed -v freebayes.vcf deduprg.bam
 
 __(*)__ Investigate result
@@ -240,7 +266,7 @@ __(*)__ Investigate result
     grep -v "^#" freebayes.vcf | wc -l
 
 
-#### VarDict variant calling
+#### VarDict variant calling *if there is time*
 
 __(*)__ Call
 
