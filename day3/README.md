@@ -92,24 +92,33 @@ Is there another way to count the reads (check the samtools parameters)
     
     
 __(*)__ Answer the following questions by investigating the SAM file
-* What version of the human assembly was used to perform the alignments?
-* What version of bwa was used to align the reads?
-* What is the name of the first read?
-* At what position does the alignment of the read start?
 
-    Use SAMtools for these questions
+    * What version of the human assembly was used to perform the alignments?
+    * What version of bwa was used to align the reads?
+    * What is the name of the first read?
+    * At what position does the alignment of the read start?
+
     samtools view -H aln.bam | less
     samtools view aln.bam | less
+    
+    Answers:
+    - NCBI37
+    - bwa 0.5.9-r16      [samtools view -H aln.bam | grep "^@PG" | head -n1 ]
+    - SRR077487.2342754     [samtools view  aln.bam | head -n1 | cut -f 1]
+    - 10003   [samtools view  aln.bam | head -n1 | cut -f 4]
 
     
 __(*)__ Sort the BAM file
 
-    samtools sort -o sorted.bam -@ 2 aln.bam
+    samtools sort -o sorted.bam -@ 2 aln.bam    [prefix with  time  to stop the duration of the command] 
     
 
 __(*)__ Extract small file
 
-    samtools view -h sorted.bam | head -n 50000 | samtools view -S -b -0 small_sorted.bam 
+    samtools view -h sorted.bam | head -n 50000 | samtools view -S -b - > small_sorted.bam
+    or 
+    samtools view -h sorted.bam | head -n 50000 | samtools view -S -b -o small_sorted.bam
+
     
     
 __(*)__ Index the bam file
