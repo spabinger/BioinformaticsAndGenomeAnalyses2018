@@ -256,8 +256,9 @@ __(*)__ Collect insert size metrics
     java -Xmx4g -jar picard.jar CollectInsertSizeMetrics I=deduprg.bam O=insertSizeHistogram.txt H=insertSizeHistogram.pdf
     
     
-__(*)__ View the PDF
-    evince insertSizeHistogram.pdf
+__(*)__ View the PDF (choose any viewer you want)
+
+    e.g. evince insertSizeHistogram.pdf
 
 
 __(*)__ Questions
