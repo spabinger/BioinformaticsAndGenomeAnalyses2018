@@ -123,12 +123,15 @@ __(*)__ Extract small file
     
 __(*)__ Index the bam file
     
-    TODO
+    samtools index sorted.bam
+    samtools index small_sorted.bam
     
     
 __(*)__ How many alignments contain a deletion (D)
     
-    TODO
+    samtools view sorted.bam | cut -f 6 | grep -c "D"
+    or
+    samtools view sorted.bam | awk '$6 ~ /D/ {print}' | wc -l 
     
   
 __(*)__ How many sequences are in the genome file
