@@ -84,10 +84,11 @@ __(*)__ View the BAM file
     
     
 __(*)__ How many reads are in the BAM file?<br/>
-Is there another way to count the reads (check the samtools view parameters - look for -v)
+Is there another way to count the reads (check the samtools parameters)
    
-    TODO1
-    TODO2
+    samtools view aln.bam | wc -l 
+    samtools view aln.bam | grep -c "^S" 
+    samtools flagstat aln.bam
     
     
 __(*)__ Answer the following questions by investigating the SAM file
