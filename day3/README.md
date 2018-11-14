@@ -93,7 +93,7 @@ Is there another way to count the reads (check the samtools parameters)
     
 __(*)__ Answer the following questions by investigating the SAM file
 
-    * What version of the human assembly was used to perform the alignments?
+    * What version of the human reference assembly/genome was used to perform the alignments?
     * What version of bwa was used to align the reads?
     * What is the name of the first read?
     * At what position does the alignment of the read start?
@@ -134,9 +134,9 @@ __(*)__ How many alignments contain a deletion (D)
     samtools view sorted.bam | awk '$6 ~ /D/ {print}' | wc -l 
     
   
-__(*)__ How many sequences are in the genome file
+__(*)__ How many sequences are in the genome reference file
 
-    samtools view -H test.bam | grep -c "SN:"
+    samtools view -H sorted.bam | grep -c "SN:"
 
 
 #### Alignment stats
@@ -148,7 +148,12 @@ __(*)__ How many sequences are in the genome file
 #### Prepare reference genome
 __(*)__ Prepare dict index *either with chr1 or with a full reference genome*
     
-    java -jar -Xmx4G picard.jar CreateSequenceDictionary R=hg19.fasta O=hg19.dict
+    ## If it is not working use
+    java -jar /home/modules/picard/picard.jar instead of picard.jar
+    
+    java -jar -Xmx4G picard.jar CreateSequenceDictionary R=chr1.fa O=chr1.dict
+    samtools dict chr1.fa -o chr1.fa.dict
+
 
 __(*)__ Prepare fai index
     
@@ -210,8 +215,9 @@ __(*)__ Check out Picard
     Go to the Picard website and investigate the features.
     - How many methods are available?
     - What syntax/command needs to be used to specify parameters?
+    Option=Value
     - In what programming language is Picard written?
-    
+    Java
 
 __(*)__ Prepare alignment file for Picard
     
