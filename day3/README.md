@@ -69,18 +69,18 @@ __(*)__ Rename the BAM file
 
 __(*)__ How big is the BAM file
 
-    TODO
+    ls -lah aln.bam
     
 
 __(*)__ Inspect the header of the BAM file
 	
-	samtools ... TODO
+	samtools view -H aln.bam | less
     
 
 
 __(*)__ View the BAM file
 
-    TODO
+    samtools view -h aln.bam | less
     
     
 __(*)__ How many reads are in the BAM file?<br/>
