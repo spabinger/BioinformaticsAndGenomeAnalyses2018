@@ -232,7 +232,7 @@ __(*)__ Prepare alignment file for Picard
 
 __(*)__ Sort with Picard
     
-    java -Xmx4g -jar picard.jar SortSam I=aln.bam O=sorted_picard.bam SORT_ORDER=coordinate
+    java -Xmx4g -jar picard.jar SortSam I=aln_fixed.bam O=sorted_picard.bam SORT_ORDER=coordinate
 
 
 __(*)__ Mark duplicates
@@ -240,20 +240,20 @@ __(*)__ Mark duplicates
     java -Xmx4g -jar picard.jar MarkDuplicates I=sorted_picard.bam O=dedup.bam M=metrics.txt
 
 
-__(*)__ Add ReadGroup
+__(*)__ Replace ReadGroup as we already have an existing one
     
     java -Xmx4g -jar picard.jar AddOrReplaceReadGroups I=dedup.bam O=deduprg.bam RGID=group1 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=sample1
 
 
 __(*)__ Index with Picard
     
-    java -Xmx4g -jar /bcga2016/picard-tools/picard.jar BuildBamIndex I=deduprg.bam O=deduprg.bam.bai VALIDATION_STRINGENCY=SILENT
+    java -Xmx4g -jar picard.jar BuildBamIndex I=deduprg.bam O=deduprg.bam.bai VALIDATION_STRINGENCY=SILENT
 
 
 __(*)__ Collect insert size metrics
     
     module add R....
-    java -Xmx4g -jar /bcga2016/picard-tools/picard.jar CollectInsertSizeMetrics I=deduprg.bam O=insertSizeHistogram.txt H=insertSizeHistogram.pdf
+    java -Xmx4g -jar picard.jar CollectInsertSizeMetrics I=deduprg.bam O=insertSizeHistogram.txt H=insertSizeHistogram.pdf
     
     
 __(*)__ View the PDF
