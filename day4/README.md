@@ -38,6 +38,9 @@ __(*)__ Prepare the VCF file
     rm 1000G_third_head.vcf
     rm 1000G_chr1_body.vcf
     
+    If it does not work make sure that you have a correct dict for your reference genome (chr1.fa)
+    Furthermore, check that the specified chr1 length in the 1000G_chr.vcf file matches your index.
+    
     
 __(*)__ Index the VCF file
 
@@ -173,29 +176,7 @@ __(*)__ Questions
 
 
 
-
-
-
-#### Varscan variant calling
-
-__(*)__ Convert to mpileup
-
-    samtools mpileup -B -f chr1.fa deduprg.bam > deduprg.pileup
-
-__(*)__ Call SNPs
-
-    java -jar <varscan.jar> mpileup2snp <pileup.file> --output-vcf 1 > varscan_snp.vcf
-
-__(*)__ Call Indels
-    
-    java -jar <varscan.jar> mpileup2indel <pileup.file> --output-vcf 1 > varscan_indel.vcf
-
-__(*)__ Investigate result
   
-    #Perform the same procedures as done for samtools.
-    #How many SNPs and indels were called?
-
-    
     
 #### Useful information
 
@@ -203,11 +184,9 @@ __(*)__ Determine number of cores
 
     cat /proc/cpuinfo  
 
-
 __(*)__ Determine memory size
     
     cat /proc/meminfo
-
 
 __(*)__ Make file executable
 

@@ -36,7 +36,6 @@ In this practical you will get to know basic tools for SAM/BAM manipulation and 
 ## Exercise 1
 
 We assume that we have a properly mapped BAM file from quality checked reads.
-For some variant callers we use a [target file](target.bed) to shorten variant calling time.
 
 #### Important
 
@@ -76,7 +75,6 @@ __(*)__ Inspect the header of the BAM file
 	
 	samtools view -H aln.bam | less
     
-
 
 __(*)__ View the BAM file
 
