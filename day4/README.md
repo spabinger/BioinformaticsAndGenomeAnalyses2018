@@ -81,7 +81,7 @@ __(*)__ Before variant calling - investigate the features
     
 __(*)__ Start variant caller
 
-    ./gatk HaplotypeCaller -R chr1.fa -I deduprg.bam --genotyping-mode DISCOVERY -O gatk.vcf
+    ./gatk HaplotypeCaller -R chr1.fa -I deduprg_recal.bam --genotyping-mode DISCOVERY -O gatk.vcf
 
 
 __(*)__ Questions
@@ -154,14 +154,15 @@ __(*)__ VCFtools
     cp samtools.vcf samtools_tab.vcf
     bgzip samtools_tab.vcf 
     tabix -p vcf samtools_tab.vcf.gz 
-    module add vcftools-0.1.14 
+    
+     
     vcf-merge samtools_tab.vcf.gz freebayes_tab.vcf.gz > merged.vcf
 
 
 
 
 
-#### Filter variants
+#### Filter variants *If there is time*
 __(*)__ Using vcfutils
      
      <full-path>/bcftools/bin/vcfutils.pl varFilter -Q 20 -d 5 -D 200 samtools.vcf > samtools_filtered.vcf
