@@ -166,6 +166,8 @@ __(*)__ Prepare fai index
 Will will use Sniffles to call SV variants - check out the Readme page:
 [https://github.com/fritzsedlazeck/Sniffles](https://github.com/fritzsedlazeck/Sniffles)
 
+* http://samtools.github.io/hts-specs/VCFv4.3.pdf
+
 __(*)__ Download and install Sniffles
 
     ## Open a new terminal
@@ -188,6 +190,8 @@ __(*)__ Use Sniffles with the provided test-dataset<br/>
 https://github.com/fritzsedlazeck/Sniffles/tree/master/test_set
 	
 	## Go into the bin directory
+	
+	ln -s sniffles_dir/Sniffles-master/bin/sniffles-core-1.0.10/sniffles sniffles_link
 	./sniffles -m ../../test_set/reads_region.bam -v my_test.vcf
 	
 	## You should expect to find one deletion at 21:21492142-21492648
@@ -195,14 +199,29 @@ https://github.com/fritzsedlazeck/Sniffles/tree/master/test_set
 
 __(*)__ Use Sniffles to call SV variants on the provided file (see *Data*) section
 
-	./sniffles -m na12878_pacbio_mts_ngmlr-0.2.3_mapped_small_sorted.bam -v my_sv_results.vcf
+	./sniffles -m na12878_pacbio_mts_ngmlr-0.2.3_mapped_small_sorted.bam -t 4 -v my_sv_results.vcf
 
 __(*)__ Check out the identified variants
 
 	- How many variants were found?
+	  grep -v -c "^#" my_sv_results.vcf 
+	  99	
+	  
 	- On which chromosomes did you identify variants?
+	  grep -v "^#" my_sv_results.vcf | cut -f 1 | sort | uniq
+	
 	- What types of variants did you find?
-	- Open the VCF and BAM file in IGV.
+      grep -v "^#" my_sv_results.vcf | cut -f 5 | grep "^<" | sort | uniq
+      <DEL>
+      <DUP>
+      <INS>
+      ...
+
+	- Open the VCF and BAM file in IGV. Browse to a location of an identified variant.
+	    samtools index na12878_pacbio_mts_ngmlr-0.2.3_mapped_small_sorted.bam
+	    Change the VCF version from v4.3 to v4.2 in the VCF file
+	    1:871662
+	    
 	- What would be your next steps?
 	
 	
@@ -285,8 +304,10 @@ __(*)__ Investigate result
 
     #How many variants were called
     grep -v "^#" samtools.vcf | wc -l
+    Answer: 7321
+    
     #Print the variant that are between 1-300000 
-    awk '!/^#/ && $2 < "300000"' samtools.vcf
+    awk '!/^#/ && $2 < 20000' samtools.vcf > samtools_1_20000.vcf
 
 
 #### FreeBayes variant calling
@@ -301,7 +322,7 @@ __(*)__ Check out the FreeBayes website
 __(*)__ Call
 
      module add freebayes....
-     freebayes -f hg19.fasta -t target.bed -v freebayes.vcf deduprg.bam
+     freebayes -f chr1.fa -v freebayes.vcf deduprg.bam
 
 __(*)__ Investigate result
   
