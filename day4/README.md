@@ -7,65 +7,56 @@ In this practical you will get to know more tools for variant calling. Furthermo
 
 * BAM file for SV calling (but we will use the BAM file from yesterday): [BAM_file](https://hmd.ait.ac.at/bcga/HG00096.mapped.ILLUMINA.bwa.GBR.exome.20120522_chr1_50mio_with_chr.bam)
 * 1000g VCF file: https://hmd.ait.ac.at/bcga/1000G_phase1.indels.hg19.vcf
-* Mills VCF file: https://hmd.ait.ac.at/bcga/Mills_and_1000G_gold_standard.indels.hg19.vcf
-
-
+* Mills VCF file: https://hmd.ait.ac.at/bcga/Mills_and_1000G_gold_standard.indels.hg19.vcf *Not needed in this practical*
 
 
 ## Exercise 1
 
 
-#### Varscan variant calling
+__(*)__ Preparation
 
-__(*)__ Convert to mpileup
-
-    samtools mpileup -B -f ${GEN_REF} deduprg.bam > <pileup.file>
-
-__(*)__ Call SNPs
-
-    java -jar <varscan.jar> mpileup2snp <pileup.file> --output-vcf 1 > varscan_snp.vcf
-
-__(*)__ Call Indels
+    Download the dataset
     
-    java -jar <varscan.jar> mpileup2indel <pileup.file> --output-vcf 1 > varscan_indel.vcf
-
-__(*)__ Investigate result
-  
-    #Perform the same procedures as done for samtools.
-    #How many SNPs and indels were called?
-
 
 #### GATK variant calling
 
 __(*)__ Known indel sites are here specified as variables - either copy the whole path or use variables as well
 
     KNOWN_INDELS_1="1000G_phase1.indels.hg19.vcf"
-    KNOWN_INDELS_2="Mills_and_1000G_gold_standard.indels.hg19.vcf"
+    KNOWN_INDELS_2="Mills_and_1000G_gold_standard.indels.hg19.vcf" (We will skip this file today)
 
 
-__(*)__ Realignment target creator
+__(*)__ Prepare the VCF file
 
-    java -Xmx4g -jar GATK-3.5/GenomeAnalysisTK.jar -T RealignerTargetCreator -R hg19.fasta -nt 8 -L target.bed \
-    -I deduprg.bam -known ${KNOWN_INDELS_1} -known ${KNOWN_INDELS_2} -o target_intervals.list
-
-__(*)__ Perform realignment
+    grep "^#" 1000G_phase1.indels.hg19.vcf | head -n 33 > 1000G_first_head.vcf
+    grep "contig=<ID=chr1,length" 1000G_phase1.indels.hg19.vcf > 1000G_second_head.vcf
+    grep "^#" 1000G_phase1.indels.hg19.vcf | tail -n -3 > 1000G_third_head.vcf
+    grep -v "^#" 1000G_phase1.indels.hg19.vcf | grep -w "chr1" > 1000G_chr1_body.vcf
+    cat 1000G_first_head.vcf 1000G_second_head.vcf 1000G_third_head.vcf 1000G_chr1_body.vcf > 1000G_chr1.vcf
+    rm 1000G_first_head.vcf
+    rm 1000G_second_head.vcf
+    rm 1000G_third_head.vcf
+    rm 1000G_chr1_body.vcf
     
-    java -Xmx4g -jar GATK-3.5/GenomeAnalysisTK.jar -T IndelRealigner -R hg19.fasta -I deduprg.bam \
-    -targetIntervals target_intervals.list -known ${KNOWN_INDELS_1} -known ${KNOWN_INDELS_2} -o dedup_rg_real.bam
+    
+__(*)__ Index the VCF file
+
+    ./gatk IndexFeatureFile -F 1000G_chr1.vcf
 
 
 __(*)__ Base quality recalibration
     
-    java -Xmx8g -jar GATK-3.5/GenomeAnalysisTK.jar -T BaseRecalibrator -R hg19.fasta -I dedup_rg_real.bam \
-    -knownSites ${KNOWN_INDELS_1} -knownSites ${KNOWN_INDELS_2} -o recal_data_table.txt -L target.bed 
-    --maximum_cycle_value 800
+    ./gatk BaseRecalibrator -R chr1.fa -I deduprg.bam --known-sites 1000G_chr1.vcf -O recal_data_table.txt
 
 
-__(*)__ Second pass of recalibration
-     
-     java -Xmx8g -jar GATK-3.5/GenomeAnalysisTK.jar -T BaseRecalibrator -R hg19.fasta -I dedup_rg_real.bam \
-     -knownSites ${KNOWN_INDELS_1} -knownSites ${KNOWN_INDELS_2} -o post_recal_data_table.txt \
-     -L target.bed --maximum_cycle_value 800 -BQSR recal_data_table.txt 
+__(*)__ Apply (former Print) to get recalibrated reads
+    
+    ./gatk ApplyBQSR -R chr1.fa -I deduprg.bam -bqsr recal_data_table.txt -O deduprg_recal.bam
+
+
+__(*)__ Second pass of recalibration - to see changes
+
+     ./gatk BaseRecalibrator -R chr1.fa -I deduprg_recal.bam --known-sites 1000G_chr1.vcf -O recal_data_table_after.txt
 
 
 __(*)__ Generate before after plots (requires R and ggplot2)
@@ -75,28 +66,51 @@ __(*)__ Generate before after plots (requires R and ggplot2)
     Inside R call
     install.packages(c('reshape','gplots','gsalib'))
     
-    java -Xmx8g -jar GATK-3.5/GenomeAnalysisTK.jar -T AnalyzeCovariates -R hg19.fasta -L target.bed 
-    -before recal_data_table.txt -after post_recal_data_table.txt -plots recalibration_plots.pdf
-
-
-
-__(*)__ Print recalibrated reads
+    ./gatk AnalyzeCovariates -before recal_data_table.txt -after recal_data_table_after.txt -plots recalibration_plots.pdf
     
-    java -Xmx8g -jar GATK-3.5/GenomeAnalysisTK.jar -T PrintReads -R hg19.fasta -L target.bed -I dedup_rg_real.bam 
-    -BQSR recal_data_table.txt -o dedup_rg_real_recal.bam
 
 
-__(*)__ Now do variant calling
+__(*)__ Before variant calling - investigate the features
+
+    * What does the option "--genotyping-mode" do?
+    * Investigate the other options
+    * Do you find a option to require a minimum base quality score?
+    * Can you limit variant calling to a certain region?
+    * Can you use multiple cores?
     
-    java -Xmx8g -jar GATK-3.5/GenomeAnalysisTK.jar -T HaplotypeCaller -R hg19.fasta -nct 8 -L target.bed 
-    -I dedup_rg_real_recal.bam --genotyping_mode DISCOVERY -o gatk.vcf
+    
+__(*)__ Start variant caller
+
+    ./gatk HaplotypeCaller -R chr1.fa -I deduprg.bam --genotyping-mode DISCOVERY -O gatk.vcf
 
 
 __(*)__ Questions
 
-* Check out the before and after plots.
-* How many variants were called?
+    * Check out the before and after plots.
+    * How many variants were called?
 
+
+
+#### SeattleSeq Annotation
+
+__(*)__ Access<br/>
+
+    http://snp.gs.washington.edu/SeattleSeqAnnotation/
+
+__(*)__ Annotate VCF file
+
+    Upload one of the VCF files (e.g. freebayes.vcf)
+    Specify VCF as return type
+    submit
+    You should receive an annotated VCF file to the specified email address
+    
+
+#### Display files in IGV
+
+    (Download and open) IGV
+    Load the BAM file and the VCF files into IGV
+    Look at the mapping on Chr 1
+    Check out the results of the different variant calling programs.
 
 
 
@@ -111,6 +125,8 @@ __(*)__ VCFlib - stats - shown here for one VCF file - repeat for all 3
     vcfstats freeb_call.vcf > freeb_call_vcf_lib_stats.txt
 
 
+
+#### Use of VCFtools
 
 __(*)__ VCFtools
 
@@ -157,27 +173,27 @@ __(*)__ Questions
 
 
 
-#### Display files in IGV
-
-    (Download and open) IGV
-    Load the BAM file and the VCF files into IGV
-    Look at the mapping on Chr 11
-    Check out the results of the different variant calling programs.
 
 
+#### Varscan variant calling
 
-#### SeattleSeq Annotation
+__(*)__ Convert to mpileup
 
-__(*)__ Access<br/>
-http://snp.gs.washington.edu/SeattleSeqAnnotation138/
+    samtools mpileup -B -f chr1.fa deduprg.bam > deduprg.pileup
 
-__(*)__ Annotate VCF file
+__(*)__ Call SNPs
 
-    Upload VCF file
-    Specify VCF as return type
-    submit
-    You should receive an annotated VCF file to the specified email address
+    java -jar <varscan.jar> mpileup2snp <pileup.file> --output-vcf 1 > varscan_snp.vcf
+
+__(*)__ Call Indels
     
+    java -jar <varscan.jar> mpileup2indel <pileup.file> --output-vcf 1 > varscan_indel.vcf
+
+__(*)__ Investigate result
+  
+    #Perform the same procedures as done for samtools.
+    #How many SNPs and indels were called?
+
     
     
 #### Useful information
@@ -206,51 +222,3 @@ __(*)__ Extract information from a file excluding the pattern and display the fi
     
     
     
-    
-    
-
-#### BONUS Annovar
-__(*)__ First convert vcf into Annovar format
-
-    /bcga2016/annovar/convert2annovar.pl -format vcf4 -includeinfo freebayes.vcf > freebayes.avinput
-    or use
-    /bcga2016/annovar/convert2annovar.pl -format vcf4old -includeinfo merged.vcf > merged.avinput
-
-
-__(*)__ Annotate with Gene information
-    
-    /bcga2016/annovar/annotate_variation.pl -geneanno -buildver hg19 freebayes.avinput /bcga2016/annovar/humandb/
-    
-__(*)__ Download additional databases
-    /bcga2016/annovar/annotate_variation.pl -buildver hg19 -downdb -webfrom annovar ljb26_all /bcga2016/annovar/humandb/
-    ...
-    ...
-
-
-__(*)__ Annotate with Region information - ljb23
-
-     <annovar-path>/annotate_variation.pl -regionanno -dbtype ljb23_all -buildver hg19 
-     freebayes.avinput /home/stephan/bin/annovar/annovar/humandb/
-
-__(*)__ Annotate with Region information - snp138
-
-     <annovar-path>/annotate_variation.pl -regionanno -dbtype snp138 -buildver hg19 
-     freebayes.avinput /home/stephan/bin/annovar/annovar/humandb/
-
-__(*)__ Try converting the output files back to VCF (check if the appropriate columns are selected in cut)
-     
-     cat <annovar.file> | cut -f 9-18
-     
-__(*)__ Notes
-
-Use table_annovar.pl which supports VCF input and outputs annotations in VCF file <br/>
-To create a nice human readable annovar output read the following:<br/>
-http://annovar.openbioinformatics.org/en/latest/user-guide/startup/#table_annovarpl<br/>
-
-
-
-__(*)__ Questions
-* Look at the annotated VCF files.
-* What databases does "ljb23" include?
-
-
