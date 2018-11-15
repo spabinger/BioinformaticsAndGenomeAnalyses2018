@@ -168,6 +168,7 @@ Will will use Sniffles to call SV variants - check out the Readme page:
 
 __(*)__ Download and install Sniffles
 
+    ## Open a new terminal
 	wget https://github.com/fritzsedlazeck/Sniffles/archive/master.tar.gz -O Sniffles.tar.gz
 	tar xzvf Sniffles.tar.gz
 	cd Sniffles-master/
@@ -201,6 +202,7 @@ __(*)__ Check out the identified variants
 	- How many variants were found?
 	- On which chromosomes did you identify variants?
 	- What types of variants did you find?
+	- Open the VCF and BAM file in IGV.
 	- What would be your next steps?
 	
 	
@@ -262,16 +264,22 @@ __(*)__ View the PDF (choose any viewer you want)
 
 
 __(*)__ Questions
-* How many reads were marked as duplicated? Look for flags.
-* What are the other sorting possibilities for SortSam?
-* Inspect the insert size metrics histogram.
+
+    * How many reads were marked as duplicated? Look for flags.
+    samtools flagstat dedup.bam
+    cat metrix.txt --> 30222*2 + 1577 
+    
+    * What are the other sorting possibilities for SortSam?
+    queryname, coordinate, duplicate    
+    
+    * Inspect the insert size metrics histogram.
 
 
 #### SAMtools variant calling
 
 __(*)__ Call
 
-     samtools mpileup -uf xxx.fa(sta) deduprg.bam | bcftools call -c -v -o samtools.vcf
+     samtools mpileup -f chr1.fa deduprg.bam | bcftools call -c -v -o samtools.vcf
 
 __(*)__ Investigate result
 
@@ -279,6 +287,7 @@ __(*)__ Investigate result
     grep -v "^#" samtools.vcf | wc -l
     #Print the variant that are between 1-300000 
     awk '!/^#/ && $2 < "300000"' samtools.vcf
+
 
 #### FreeBayes variant calling
 
@@ -299,18 +308,6 @@ __(*)__ Investigate result
     #Perform the same procedures as done for samtools
     #Do you notice differences?
     grep -v "^#" freebayes.vcf | wc -l
-
-
-#### VarDict variant calling *if there is time*
-
-__(*)__ Call
-
-     module add VarDict-1.4.5
-     AF_THR="0.01" # minimum allele frequency
-     /bcga2016/vardict/VarDictJava/build/install/VarDict/bin/VarDict -G hg19.fasta -f ${AF_THR} -N my_sample -b sorted.bam -z -c 1 -S 2 -E 3 -g 4 -R chr11:1-800000 | /bcga2016/vardict/VarDictJava/VarDict/teststrandbias.R | /bcga2016/vardict/VarDictJava/VarDict/var2vcf_valid.pl -N my_sample -E -f $AF_THR > vardict.vcf
-     
-     In case the software is not fully installed (just for the instructions)
-     VarDict -G hg19.fasta -f 0.01 -N my_sample -b deduprg.bam -z -c 1 -S 2 -E 3 -g 4 -R chr11:1-800000  > vardict.var
 
 
 
