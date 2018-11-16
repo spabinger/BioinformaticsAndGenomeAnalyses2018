@@ -27,6 +27,35 @@ Please use the links below to get information about each day:
 * [The Python Guru](https://thepythonguru.com/)
 
 
+#### Helpful links
+
+###### Genotyping
+* [GATK](https://software.broadinstitute.org/gatk/)
+* [Comparison of pipelines](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4619817/)
+
+###### Somatic mutations
+* [In-depth comparison of somatic point mutation callers (NatSciRep)](https://www.nature.com/articles/srep36540)
+* [Lancet Tool](https://github.com/nygenome/lancet)
+* [Evaluation of low-cov callers](https://www.nature.com/articles/srep43169)
+
+###### Structural variation
+* [NatRev Paper](https://www.ncbi.nlm.nih.gov/pubmed/21358748)
+* [Sniffles](https://github.com/fritzsedlazeck/Sniffles)
+* [MAVIS - merging, annotation, validation](http://mavis.bcgsc.ca/)
+* [GRIDSS - rearrangements](https://genome.cshlp.org/content/early/2017/11/02/gr.222109.117.abstract)
+* [tardis](https://github.com/BilkentCompGen/tardis)
+* [SV-Bay - structural variant detection in cancer](https://github.com/InstitutCurie/SV-Bay)
+* [Mapping and phasing using Nanopore - Nat](https://www.nature.com/articles/s41467-017-01343-4)
+
+###### Annotation
+* [Annovar](http://annovar.openbioinformatics.org/en/latest/)
+* [SeattleSeqAnnotation](http://snp.gs.washington.edu/SeattleSeqAnnotation)
+* [SVScore](http://www.github.com/lganel/SVScore)
+
+###### Pipeline
+* [bcbio](https://github.com/bcbio/bcbio-nextgen)
+
+
 #### Installation of packages
 Please use the following commands to install packages (will be determined during the course):
 
@@ -37,3 +66,4 @@ conda install -c bioconda pybedtools
 conda install -c bioconda pyvcf
 
 ```
+
